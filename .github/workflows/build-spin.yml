@@ -1,0 +1,82 @@
+name: Build Tino Fedora Spin
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: fedora:latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Install dependencies
+      run: |
+        dnf -y install lorax-lmc-novirt anaconda git
+        dnf -y install pykickstart
+
+    - name: Validate kickstart file
+      run: |
+        ksvalidator kickstarts/live-image.ks
+
+    - name: Build live image
+      run: |
+        # Note: Building live images requires elevated privileges
+        # This is a placeholder for the actual build process
+        echo "Kickstart validation successful"
+        echo "For actual image building, use a dedicated build environment"
+        echo "See: https://docs.fedoraproject.org/en-US/fedora/latest/install-guide/advanced/Kickstart_Installations/"
+
+    - name: Generate build report
+      if: success()
+      run: |
+        echo "Build Report" > build-report.txt
+        echo "============" >> build-report.txt
+        echo "Date: $(date)" >> build-report.txt
+        echo "Commit: $GITHUB_SHA" >> build-report.txt
+        echo "Branch: $GITHUB_REF" >> build-report.txt
+        echo "" >> build-report.txt
+        echo "Package List:" >> build-report.txt
+        cat packages/packages-tino.pkglst >> build-report.txt
+
+    - name: Upload build artifacts
+      if: success()
+      uses: actions/upload-artifact@v4
+      with:
+        name: build-report
+        path: build-report.txt
+        retention-days: 30
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Check file structure
+      run: |
+        echo "Checking directory structure..."
+        test -d docs || (echo "Missing docs directory" && exit 1)
+        test -d kickstarts || (echo "Missing kickstarts directory" && exit 1)
+        test -d packages || (echo "Missing packages directory" && exit 1)
+        test -d repo-directives || (echo "Missing repo-directives directory" && exit 1)
+        test -d scripts || (echo "Missing scripts directory" && exit 1)
+        test -f kickstarts/live-image.ks || (echo "Missing kickstart file" && exit 1)
+        echo "Directory structure is valid!"
+
+    - name: Verify script permissions
+      run: |
+        if [ -x scripts/post-install.sh ]; then
+          echo "post-install.sh is executable"
+        else
+          echo "post-install.sh is not executable"
+          exit 1
+        fi

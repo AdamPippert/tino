@@ -2,6 +2,10 @@
 # Targeted for UTM on Apple Silicon, AMD Strix Halo, and RK3588 (Orange Pi 5).
 # Lean defaults; per-arch firmware in %post; SDDM (Wayland) + Hyprland session.
 
+# ----- Repository Configuration -----
+# Include external repository directives for multi-arch support
+%include ../repo-directives/fedora-repo.ks
+
 # ----- Install basics -----
 lang en_US.UTF-8
 keyboard us
@@ -28,65 +32,9 @@ part /         --fstype=ext4 --grow --size=8192
 network --bootproto=dhcp --hostname=omarchy
 
 # ----- Packages -----
+# Package list is maintained in a separate file for clarity
 %packages
-@core
-# Desktop & compositor
-hyprland
-sddm
-xdg-desktop-portal
-xdg-desktop-portal-wlr
-wl-clipboard
-wlr-randr
-waybar
-foot
-
-# Audio / media
-pipewire
-pipewire-alsa
-pipewire-pulseaudio
-wireplumber
-
-# Graphics / GL / Vulkan
-mesa-dri-drivers
-mesa-vulkan-drivers
-vulkan-loader
-vulkan-tools
-kernel-modules-extra
-
-# Fonts (lightweight but readable)
-google-noto-sans-fonts
-google-noto-sans-mono-fonts
-google-noto-emoji-fonts
-
-# Networking / Wi-Fi / BT
-NetworkManager-wifi
-iwd
-bluez
-bluez-tools
-
-# Quality-of-life CLI
-vim-minimal
-nano
-git
-curl
-wget
-zip
-unzip
-tar
-bzip2
-xz
-
-# System tools
-htop
-lm_sensors
-fwupd
-openssh-clients
-rsync
-jq
-
-# For VMs and installers
-qgnomeplatform-qt5
-qgnomeplatform-qt6
+%include ../packages/packages-tino.pkglst
 
 # Remove heavy or unneeded defaults often pulled by deps
 # (Livemedia will respect excludes during compose)
