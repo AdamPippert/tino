@@ -1,0 +1,30 @@
+# Tino Fedora Spin - Package List
+#
+# This file contains the additional packages to be included in the Tino Spin
+# beyond the base Fedora installation.
+#
+# Format: One package per line, lines starting with # are comments
+
+# Base System Tools
+vim-enhanced
+git
+htop
+tmux
+
+# Development Tools
+gcc
+make
+python3
+python3-pip
+
+# Network Tools
+curl
+wget
+net-tools
+
+# System Administration
+systemd
+firewalld
+
+# Additional packages
+# Add your custom packages below:
