@@ -1,30 +1,66 @@
 # Tino Fedora Spin - Package List
 #
-# This file contains the additional packages to be included in the Tino Spin
-# beyond the base Fedora installation.
-#
+# Extracted from the Tino kickstart for multi-arch (x86_64 + aarch64) builds
+# This file lists packages for Hyprland/Wayland desktop environment
 # Format: One package per line, lines starting with # are comments
 
-# Base System Tools
-vim-enhanced
+# Core system
+@core
+
+# Desktop & Compositor
+hyprland
+sddm
+xdg-desktop-portal
+xdg-desktop-portal-wlr
+wl-clipboard
+wlr-randr
+waybar
+foot
+
+# Audio / Media
+pipewire
+pipewire-alsa
+pipewire-pulseaudio
+wireplumber
+
+# Graphics / GL / Vulkan
+mesa-dri-drivers
+mesa-vulkan-drivers
+vulkan-loader
+vulkan-tools
+kernel-modules-extra
+
+# Fonts (lightweight but readable)
+google-noto-sans-fonts
+google-noto-sans-mono-fonts
+google-noto-emoji-fonts
+
+# Networking / Wi-Fi / BT
+NetworkManager-wifi
+iwd
+bluez
+bluez-tools
+
+# Quality-of-life CLI
+vim-minimal
+nano
 git
-htop
-tmux
-
-# Development Tools
-gcc
-make
-python3
-python3-pip
-
-# Network Tools
 curl
 wget
-net-tools
+zip
+unzip
+tar
+bzip2
+xz
 
-# System Administration
-systemd
-firewalld
+# System Tools
+htop
+lm_sensors
+fwupd
+openssh-clients
+rsync
+jq
 
-# Additional packages
-# Add your custom packages below:
+# For VMs and Installers
+qgnomeplatform-qt5
+qgnomeplatform-qt6
