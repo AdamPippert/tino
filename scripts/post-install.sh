@@ -35,11 +35,11 @@ echo "Applying user configurations..."
 # Package Management
 echo "Running package management tasks..."
 
-# Example: Update system
-# dnf -y update
+# Apply all available updates
+dnf -y upgrade --refresh
 
-# Example: Clean package cache
-# dnf clean all
+# Clean package cache
+dnf clean all
 
 # Security Hardening
 echo "Applying security configurations..."

@@ -1,4 +1,4 @@
-# Tino - an Omarchy inspired Fedora Spin - multi-arch (aarch64 + x86_64) Hyprland/Wayland
+# Tino - an Omarchy inspired Fedora 44 Spin - multi-arch (aarch64 + x86_64) Hyprland/Wayland
 # Targeted for UTM on Apple Silicon, AMD Strix Halo, and RK3588 (Orange Pi 5).
 # Lean defaults; per-arch firmware in %post; SDDM (Wayland) + Hyprland session.
 
@@ -45,6 +45,9 @@ network --bootproto=dhcp --hostname=omarchy
 set -euxo pipefail
 
 ARCH="$(uname -m)"
+
+# Apply all available updates so the installed system is fully up to date
+dnf -y upgrade --refresh
 
 # SDDM on Wayland + default Hyprland session
 mkdir -p /etc/sddm.conf.d
