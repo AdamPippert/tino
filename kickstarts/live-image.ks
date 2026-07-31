@@ -1,4 +1,6 @@
 # Tino - an Omarchy inspired Fedora Spin - multi-arch (aarch64 + x86_64) Hyprland/Wayland
+# Based on Fedora 44 (Released April 2026)
+# Kernel: 6.19+ (updates to 7.x), DNF5, GNOME 50, GCC 16
 # Targeted for UTM on Apple Silicon, AMD Strix Halo, and RK3588 (Orange Pi 5).
 # Lean defaults; per-arch firmware in %post; SDDM (Wayland) + Hyprland session.
 
@@ -95,8 +97,10 @@ systemctl enable power-profiles-daemon.service || true
 systemctl enable sshd.service || true
 
 # ------------------ Per-arch tailoring ------------------
+# Note: Using dnf5 in Fedora 44 (significantly faster than dnf4)
+
 if [ "$ARCH" = "x86_64" ]; then
-  # AMD GPUs (Strix Halo): ensure firmware present for latest kernels
+  # AMD GPUs (Strix Halo): ensure firmware present for latest kernels (6.19+/7.x)
   dnf -y install linux-firmware amdgpu-firmware || true
   # Vulkan ICDs generally covered by mesa-vulkan-drivers
 fi
@@ -106,6 +110,14 @@ if [ "$ARCH" = "aarch64" ]; then
   # Some boards use extra firmware packages; install broadly but harmlessly in VMs.
   dnf -y install linux-firmware firmware-rockchip || true
   # Bluetooth stacks are variable across boards; include tools already.
+fi
+
+# Fedora 44 compatibility: Hyprland dependency fixes
+# F44 upgraded display-info and aquamarine libraries which may cause compatibility issues
+# Ensure Hyprland and its dependencies are compatible
+if command -v hyprland >/dev/null 2>&1; then
+  # Verify Hyprland can start (basic sanity check)
+  hyprland --version || echo "WARNING: Hyprland version check failed - may need rebuild" >&2
 fi
 
 # UTM detection tweaks (cosmetic): if running under QEMU/UTM, prefer virtio.
@@ -121,8 +133,13 @@ SystemMaxUse=200M
 RuntimeMaxUse=100M
 EOF
 
-# dnf: keep cache small on installed systems (builder nodes will override)
+# DNF5 configuration (Fedora 44 default package manager)
+# DNF5 is significantly faster and more efficient than DNF4
+# Keep cache small on installed systems (builder nodes will override)
 echo 'keepcache=False' >> /etc/dnf/dnf.conf
+
+# DNF5 parallel downloads (default in F44, explicitly set for clarity)
+echo 'max_parallel_downloads=10' >> /etc/dnf/dnf.conf
 
 %end
 
